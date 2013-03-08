@@ -1,0 +1,76 @@
+policy_module(list_var, 1.0.0) 
+
+########################################
+#
+# Declarations
+#
+gen_require(`
+	role staff_r;
+ 	type staff_t, fs_t, setfiles_t, bin_t, devtty_t, etc_t, 
+	httpd_sys_content_t, httpd_sys_script_exec_t, ld_so_cache_t,
+	ld_so_t, lib_t, list_var_exec_t, list_var_t, locale_t, proc_t,
+	security_t, setrans_var_run_t, sshd_t, staff_t, sysfs_t, 
+	user_devpts_t, user_home_dir_t, user_home_t, var_run_t, var_t, 
+	root_t, usr_t, device_t, proc_t, home_root_t;
+')
+
+type list_var_t;
+type list_var_exec_t;
+type list_var_home_t;
+
+allow list_var_exec_t fs_t:filesystem associate;
+allow setfiles_t list_var_exec_t:file relabelto;
+
+allow list_var_home_t fs_t:filesystem associate;
+allow setfiles_t list_var_home_t:file relabelto;
+
+#============= staff_t ==============
+allow staff_t list_var_t:process { siginh noatsecure rlimitinh transition };
+allow staff_t list_var_exec_t:file { read execute open };
+type_transition staff_t list_var_exec_t:process list_var_t;
+role staff_r types list_var_t;
+allow staff_t list_var_home_t:file { getattr read open unlink open relabelto relabelfrom ioctl };
+
+#============= list_var_t ==============
+allow list_var_t bin_t:file { read getattr open execute execute_no_trans };
+allow list_var_t bin_t:dir search;
+allow list_var_t devtty_t:chr_file { read write open };
+allow list_var_t etc_t:dir search;
+allow list_var_t etc_t:file { read getattr open };
+allow list_var_t httpd_sys_content_t:dir { read getattr open search };
+allow list_var_t httpd_sys_script_exec_t:dir getattr;
+allow list_var_t ld_so_cache_t:file { read getattr open };
+allow list_var_t ld_so_t:file { read execute open };
+allow list_var_t lib_t:file { read getattr open execute };
+allow list_var_t lib_t:lnk_file read;
+allow list_var_t list_var_exec_t:file { read entrypoint ioctl open getattr };
+allow list_var_t locale_t:dir search;
+allow list_var_t locale_t:file { read getattr open };
+allow list_var_t proc_t:file { read getattr open };
+allow list_var_t proc_t:dir search;
+allow list_var_t security_t:dir { getattr search };
+allow list_var_t security_t:file { read open };
+allow list_var_t security_t:filesystem getattr;
+allow list_var_t self:fifo_file { read write getattr };
+allow list_var_t self:process { fork sigchld };
+allow list_var_t self:unix_stream_socket { create connect };
+allow list_var_t setrans_var_run_t:dir search;
+allow list_var_t sshd_t:fd use;
+allow list_var_t staff_t:fd use;
+allow list_var_t staff_t:process sigchld;
+allow list_var_t sysfs_t:dir search;
+allow list_var_t user_devpts_t:chr_file { read write getattr ioctl };
+allow list_var_t user_home_dir_t:dir { getattr search };
+# allow list_var_t user_home_t:file { write ioctl open getattr };
+allow list_var_t home_root_t:dir search;
+allow list_var_t var_run_t:dir search;
+allow list_var_t var_run_t:lnk_file read;
+allow list_var_t var_t:dir { search getattr };
+type_transition list_var_t user_home_dir_t:file list_var_home_t;
+allow list_var_t list_var_home_t:file { getattr read write create open ioctl };
+allow list_var_t user_home_dir_t:dir { write add_name };
+allow list_var_t root_t:dir search;
+allow list_var_t lib_t:dir { search getattr };
+allow list_var_t usr_t:dir search;
+allow list_var_t device_t:dir search;
+

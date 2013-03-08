@@ -1,0 +1,5 @@
+ifdef(`list_var_per_role_template',`
+')
+ifdef(`list_var_per_userdomain_template',`
+errprint(`Warning: per_userdomain_templates have been renamed to per_role_templates (list_var_per_userdomain_template)'__endline__)
+')

@@ -1,0 +1,2 @@
+/usr/bin/list_var -- gen_context(system_u:object_r:list_var_exec_t,s0)
+HOME_DIR/list_var.txt -- gen_context(system_u:object_r:list_var_home_t,s0)
