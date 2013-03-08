@@ -25,6 +25,7 @@ allow list_var_home_t fs_t:filesystem associate;
 allow setfiles_t list_var_home_t:file relabelto;
 
 #============= staff_t ==============
+# Here you put your working domain
 allow staff_t list_var_t:process { siginh noatsecure rlimitinh transition };
 allow staff_t list_var_exec_t:file { read execute open };
 type_transition staff_t list_var_exec_t:process list_var_t;
